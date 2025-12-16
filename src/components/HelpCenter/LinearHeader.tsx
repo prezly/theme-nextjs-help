@@ -79,12 +79,13 @@ export function LinearHeader({
                 className,
             )}
         >
-            <div className="flex h-14 items-center">
-                {/* Logo section - aligned with sidebar width (320px = w-80) */}
+            <div className="flex h-14 items-center justify-between md:justify-start">
+                {/* Logo section - aligned with sidebar width (320px = w-80) on desktop */}
                 <div
                     className={cn(
-                        'w-80 flex-shrink-0 px-6 flex items-center justify-between transition-all duration-200',
-                        isSearchOpen ? 'border-r-muted/30' : 'border-r',
+                        'flex-shrink-0 px-4 md:px-6 flex items-center justify-between transition-all duration-200',
+                        'md:w-80',
+                        isSearchOpen ? 'md:border-r-muted/30' : 'md:border-r',
                     )}
                 >
                     <Link
@@ -108,12 +109,12 @@ export function LinearHeader({
                         )}
                     </Link>
 
-                    {/* Search icon next to logo */}
+                    {/* Search icon next to logo - hidden on mobile, shown on desktop */}
                     {searchSettings && !newsroom.is_hub && (
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 ml-2"
+                            className="h-8 w-8 ml-2 hidden md:flex"
                             aria-label="Search"
                             onClick={openSearch}
                         >
@@ -122,8 +123,41 @@ export function LinearHeader({
                     )}
                 </div>
 
-                {/* Breadcrumbs section */}
-                <div className="flex-1 flex items-center justify-between px-6">
+                {/* Mobile actions - search icon and open app button */}
+                <div className="flex items-center space-x-2 px-4 md:hidden">
+                    {searchSettings && !newsroom.is_hub && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label="Search"
+                            onClick={openSearch}
+                        >
+                            <Search className="h-4 w-4" />
+                        </Button>
+                    )}
+                    <a
+                        href="https://rock.prezly.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-decoration-none"
+                    >
+                        <Button
+                            variant="default"
+                            size="sm"
+                            className="h-8 px-3 text-sm font-medium text-white border-0 hover:opacity-90"
+                            style={{
+                                backgroundColor: accentColor || '#2EAE67',
+                                color: '#ffffff',
+                            }}
+                        >
+                            Open app
+                        </Button>
+                    </a>
+                </div>
+
+                {/* Breadcrumbs section - hidden on mobile */}
+                <div className="hidden md:flex flex-1 items-center justify-between px-6">
                     <Breadcrumbs
                         localeCode={localeCode}
                         categories={categories}

@@ -87,3 +87,12 @@ Optional:
 ### Testing
 
 Playwright tests in `tests/` directory. Run with `npm run test`.
+
+## Git Workflow
+
+When working on new features:
+
+1. **Create a feature branch** - Before starting work on a new feature, ask for the branch name and create a new branch from `main`
+2. **Run checks before committing** - Always run `pnpm check` and fix any Biome errors/warnings before committing
+3. **Commit regularly** - Make frequent commits to the feature branch as work progresses
+4. **Push when done** - When the feature is complete, push the branch to GitHub

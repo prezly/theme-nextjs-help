@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/ui/button';
 import { ScrollArea } from '@/components/ui/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { SearchSettings } from '@/types';
+import { isPreviewActive } from '@/utils';
 
 import { CategorySidebar } from './CategorySidebar';
 import { LinearHeader } from './LinearHeader';
@@ -57,10 +58,12 @@ export function HelpCenterLayout({
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isPreview, setIsPreview] = useState(false);
 
-    // Prevent hydration mismatch
+    // Prevent hydration mismatch and check preview status
     useEffect(() => {
         setIsHydrated(true);
+        setIsPreview(isPreviewActive());
     }, []);
 
     // Close sidebar on route change (mobile)
@@ -94,8 +97,9 @@ export function HelpCenterLayout({
                     variant="outline"
                     size="icon"
                     className={cn(
-                        'fixed top-16 left-4 z-50 md:hidden',
+                        'fixed left-4 z-50 md:hidden',
                         'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+                        isPreview ? 'top-[calc(4rem+44px)]' : 'top-16',
                     )}
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     aria-label="Toggle navigation menu"
@@ -106,13 +110,14 @@ export function HelpCenterLayout({
                 {/* Left Sidebar - Navigation - Fixed/Sticky */}
                 <aside
                     className={cn(
-                        'fixed top-14 bottom-0 left-0 z-[60] w-80 backdrop-blur transition-all duration-200',
+                        'fixed bottom-0 left-0 z-[60] w-80 backdrop-blur transition-all duration-200',
                         'transform transition-transform duration-300 ease-in-out',
                         isSearchOpen
                             ? 'border-r-muted/30'
                             : 'border-r bg-background/95 supports-[backdrop-filter]:bg-background/60',
                         isHydrated && isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
                         'md:translate-x-0', // Always visible on desktop
+                        isPreview ? 'top-[calc(3.5rem+44px)]' : 'top-14',
                     )}
                 >
                     <ScrollArea className="h-full">
