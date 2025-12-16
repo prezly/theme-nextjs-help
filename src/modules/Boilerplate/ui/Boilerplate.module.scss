@@ -1,3 +1,28 @@
+.preview {
+    position: relative;
+
+    &:hover {
+        .settingsLink {
+            display: flex;
+        }
+    }
+}
+
+.settingsLink {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background-color: color-mix(in srgb, var(--prezly-footer-background-color) 90%, transparent);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--prezly-footer-text-color);
+    text-decoration: none;
+    gap: $spacing-half;
+    border: 1px dashed var(--prezly-text-color);
+    border-radius: $border-radius-s;
+}
+
 .container {
     padding: $spacing-9 0;
     color: var(--prezly-footer-text-color);
@@ -17,6 +42,10 @@
 
     margin: $spacing-3 0;
     color: var(--prezly-footer-text-color);
+
+    &.preview {
+        opacity: 0.5;
+    }
 }
 
 .aboutUs {
@@ -48,6 +77,10 @@
     * {
         color: inherit;
     }
+
+    &.preview {
+        opacity: 0.4;
+    }
 }
 
 .contact {
@@ -63,6 +96,14 @@
         // arbitrary value to align icon to text
         margin-top: 0.1875rem;
         flex-shrink: 0;
+    }
+
+    &.preview {
+        opacity: 0.5;
+
+        .link {
+            text-decoration: none;
+        }
     }
 }
 

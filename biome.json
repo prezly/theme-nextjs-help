@@ -16,14 +16,9 @@
                 "useHtmlLang": "off",
                 "useKeyWithClickEvents": "off",
                 "useSemanticElements": "off",
-                "useButtonType": "off"
-            },
-            "style": {
-                "noUselessElse": "warn"
+                "useButtonType": "off",
+                "noStaticElementInteractions": "off"
             }
         }
-    },
-    "formatter": {
-        "enabled": true
     }
 }

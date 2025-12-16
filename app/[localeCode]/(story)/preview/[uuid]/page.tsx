@@ -43,7 +43,6 @@ export async function generateMetadata(props: Props) {
 }
 
 export default async function PreviewStoryPage(props: Props) {
-    const { localeCode } = await props.params;
     const searchParams = await props.searchParams;
     const { story, relatedStories } = await resolve(props.params);
     const settings = await app().themeSettings();
@@ -51,24 +50,24 @@ export default async function PreviewStoryPage(props: Props) {
 
     return (
         <>
-            <Broadcast story={story} isPreview />
+            <Broadcast story={story} isSecretStoryPage />
             <Story
                 story={story}
                 showDate={settings.show_date}
                 withHeaderImage={themeSettings.header_image_placement}
                 relatedStories={themeSettings.show_read_more ? relatedStories : []}
+                hasRelatedStories={themeSettings.show_read_more}
                 actions={{
                     show_copy_content: themeSettings.show_copy_content,
-                    show_copy_url: false, // Unpublished article has no URL
+                    show_copy_url: themeSettings.show_copy_url,
                     show_download_assets: themeSettings.show_download_assets,
                     show_download_pdf: themeSettings.show_download_pdf,
                 }}
                 sharingOptions={{
                     sharing_placement: themeSettings.sharing_placement,
-                    sharing_actions: [], // Cannot share unpublished article
+                    sharing_actions: themeSettings.sharing_actions,
                 }}
                 withBadges={themeSettings.story_card_variant === 'boxed'}
-                locale={localeCode}
             />
         </>
     );

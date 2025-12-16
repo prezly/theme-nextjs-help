@@ -25,9 +25,10 @@ import { IconClose, IconExternalLink, IconMenu, IconSearch } from '@/icons';
 import { useBroadcastedPageTypeCheck } from '@/modules/Broadcast';
 import type { ThemeSettings } from '@/theme-settings';
 import type { SearchSettings } from '@/types';
+import { isPreviewActive } from '@/utils';
 
 import { Categories } from './Categories';
-import { Logo } from './Logo';
+import { Logo, LogoPlaceholder } from './Logo';
 
 import styles from './Header.module.scss';
 
@@ -78,6 +79,7 @@ export function Header({
     const [measurement, headerRef] = useMeasure<HTMLElement>();
     const isSearchPage = useBroadcastedPageTypeCheck('search');
     const isPreviewMode = process.env.PREZLY_MODE === 'preview';
+    const isPreview = isPreviewActive();
 
     const shouldShowMenu =
         categories.length > 0 || displayedLanguages > 0 || displayedGalleries > 0;
@@ -178,21 +180,32 @@ export function Header({
     const isCategoriesLayoutBar = categoriesLayout === 'bar';
     const isCategoriesLayoutDropdown = categoriesLayout === 'dropdown' || isMobile;
     const numberOfPublicGalleries = newsroom.public_galleries_number;
+    const shouldShowSearchText =
+        !isMobile &&
+        [
+            isPreview || numberOfPublicGalleries > 0,
+            mainSiteUrl,
+            isCategoriesLayoutDropdown && translatedCategories.length > 0,
+        ].filter(Boolean).length < 2;
 
     return (
         <>
             <header ref={headerRef} className={styles.container}>
                 <div className="container">
                     <nav className={styles.header}>
-                        <Link
-                            href={{ routeName: 'index', params: { localeCode } }}
-                            className={classNames(styles.newsroom, {
-                                [styles.withoutLogo]: !logo,
-                            })}
-                        >
-                            {!logo && <div className={styles.title}>{newsroomName}</div>}
-                            {logo && <Logo alt={newsroomName} image={logo} size={logoSize} />}
-                        </Link>
+                        {isPreview && !logo ? (
+                            <LogoPlaceholder newsroom={newsroom} />
+                        ) : (
+                            <Link
+                                href={{ routeName: 'index', params: { localeCode } }}
+                                className={classNames(styles.newsroom, {
+                                    [styles.withoutLogo]: !logo,
+                                })}
+                            >
+                                {!logo && <div className={styles.title}>{newsroomName}</div>}
+                                {logo && <Logo alt={newsroomName} image={logo} size={logoSize} />}
+                            </Link>
+                        )}
 
                         <div className={styles.navigationWrapper}>
                             {searchSettings && !newsroom.is_hub && (
@@ -211,7 +224,11 @@ export function Header({
                                     aria-expanded={isSearchOpen}
                                     title={formatMessage(translations.search.title)}
                                     aria-label={formatMessage(translations.search.title)}
-                                />
+                                >
+                                    {shouldShowSearchText
+                                        ? formatMessage(translations.search.title)
+                                        : undefined}
+                                </ButtonLink>
                             )}
 
                             {shouldShowMenu && (
@@ -239,7 +256,7 @@ export function Header({
                                 <div role="none" className={styles.backdrop} onClick={closeMenu} />
                                 {/** biome-ignore lint/correctness/useUniqueElementIds: <Header is rendered only once. It's safe to have static id> */}
                                 <ul id="menu" className={styles.navigationInner}>
-                                    {numberOfPublicGalleries > 0 && (
+                                    {(numberOfPublicGalleries > 0 || isPreview) && (
                                         <li className={styles.navigationItem}>
                                             <ButtonLink
                                                 href={{

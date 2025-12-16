@@ -13,6 +13,7 @@ import {
     BroadcastGalleryProvider,
     BroadcastNotificationsProvider,
     BroadcastPageTypesProvider,
+    BroadcastPreviewProvider,
     BroadcastStoryProvider,
     BroadcastTranslationsProvider,
 } from '@/modules/Broadcast';
@@ -21,6 +22,7 @@ import { CookieConsent } from '@/modules/CookieConsent/CookieConsent';
 import { Branding, Preconnect } from '@/modules/Head';
 import { IntlProvider } from '@/modules/Intl';
 import { Notifications } from '@/modules/Notifications';
+import { PreviewBar } from '@/modules/PreviewBar';
 import { RoutingProvider } from '@/modules/Routing';
 
 import '@prezly/content-renderer-react-js/styles.css';
@@ -120,6 +122,7 @@ export default async function MainLayout(props: Props) {
                         />
                     )}
                     <Notifications localeCode={localeCode} />
+                    <PreviewBar newsroom={newsroom} />
                     <div className={styles.layout}>{children}</div>
                     <ScrollToTopButton />
                     <CookieConsent localeCode={localeCode} />
@@ -153,7 +156,9 @@ async function AppContext(props: { children: ReactNode; localeCode: Locale.Code 
                                     <BroadcastPageTypesProvider>
                                         <BroadcastNotificationsProvider>
                                             <BroadcastTranslationsProvider>
-                                                {children}
+                                                <BroadcastPreviewProvider>
+                                                    {children}
+                                                </BroadcastPreviewProvider>
                                             </BroadcastTranslationsProvider>
                                         </BroadcastNotificationsProvider>
                                     </BroadcastPageTypesProvider>
