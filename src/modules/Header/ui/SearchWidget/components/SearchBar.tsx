@@ -16,7 +16,7 @@ import styles from './SearchBar.module.scss';
 
 type Props = SearchBoxProvided & SearchBoxExposed;
 
-export const SearchBar = connectSearchBox(({ currentRefinement, refine }: Props) => {
+function SearchBarComponent({ currentRefinement, refine }: Props) {
     const localeCode = useLocale();
     const { generateUrl } = useRouting();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -75,6 +75,6 @@ export const SearchBar = connectSearchBox(({ currentRefinement, refine }: Props)
             </Button>
         </form>
     );
-});
+}
 
-SearchBar.displayName = 'SearchBar';
+export const SearchBar = connectSearchBox(SearchBarComponent);

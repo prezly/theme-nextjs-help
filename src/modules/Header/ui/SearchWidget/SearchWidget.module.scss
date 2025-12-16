@@ -7,6 +7,9 @@
         height: 100% !important;
         border-radius: 0 !important;
         box-shadow: none !important;
+        max-width: 100% !important;
+        position: fixed !important;
+        inset: 0 !important;
     }
 }
 
@@ -22,4 +25,40 @@
     @include mobile-only {
         display: none;
     }
+}
+
+.dialog {
+    @include mobile-only {
+        z-index: 100 !important;
+    }
+}
+
+.searchBarWrapper {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--prezly-border-color);
+
+    > form {
+        flex: 1;
+        border-bottom: none;
+    }
+}
+
+.closeButton {
+    display: none;
+    margin: $spacing-2;
+    margin-left: 0;
+    padding: $spacing-1 !important;
+    flex-shrink: 0;
+
+    @include mobile-only {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.closeIcon {
+    width: 1rem;
+    height: 1rem;
 }
