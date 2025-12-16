@@ -78,7 +78,7 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     logo_size: 'medium',
     main_logo: null,
     main_site_label: null,
-    main_site_url: null,
+    main_site_url: "http://rock.prezly.com/",
     show_date: true,
     show_featured_categories: true,
     sharing_actions: [

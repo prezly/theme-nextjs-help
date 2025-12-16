@@ -17,7 +17,13 @@
                 "useKeyWithClickEvents": "off",
                 "useSemanticElements": "off",
                 "useButtonType": "off"
+            },
+            "style": {
+                "noUselessElse": "warn"
             }
         }
+    },
+    "formatter": {
+        "enabled": true
     }
 }

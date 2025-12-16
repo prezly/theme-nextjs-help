@@ -8,8 +8,7 @@ import { useCallback } from 'react';
 import type { StateResultsProvided } from 'react-instantsearch-core';
 import { Hits } from 'react-instantsearch-dom';
 
-import { FormattedMessage, useLocale, useRouting } from '@/adapters/client';
-import { ButtonLink } from '@/components/Button';
+import { FormattedMessage, useLocale } from '@/adapters/client';
 import type { ExternalStoryUrl } from '@/types';
 import { getNewsroomUuidFromHitTags, onPlainLeftClick } from '@/utils';
 
@@ -25,16 +24,8 @@ interface Props extends Pick<StateResultsProvided<Search.IndexedStory>, 'searchR
     onClose?: () => void;
 }
 
-export function SearchResults({
-    newsrooms,
-    newsroomUuid,
-    searchResults,
-    query,
-    isSearchPage,
-    onClose,
-}: Props) {
+export function SearchResults({ newsrooms, newsroomUuid, searchResults, onClose }: Props) {
     const localeCode = useLocale();
-    const { generateUrl } = useRouting();
     const totalResults = searchResults?.nbHits ?? 0;
 
     const Hit = useCallback<typeof SearchHit>(
@@ -65,30 +56,14 @@ export function SearchResults({
 
     return (
         <>
-            <p className={classNames(styles.title, { [styles.empty]: !totalResults })}>
-                {totalResults ? (
-                    <FormattedMessage locale={localeCode} for={translations.search.resultsTitle} />
-                ) : (
+            {/* Show "No results" message only when there are no results */}
+            {!totalResults && (
+                <p className={classNames(styles.title, styles.empty)}>
                     <FormattedMessage locale={localeCode} for={translations.search.noResults} />
-                )}
-            </p>
+                </p>
+            )}
             {/* @ts-expect-error FIXME */}
             <Hits hitComponent={Hit} />
-            {totalResults > 3 && (
-                <ButtonLink
-                    href={`${generateUrl('search', { localeCode })}?query=${encodeURIComponent(
-                        query ?? '',
-                    )}`}
-                    variation="navigation"
-                    className={styles.link}
-                    forceRefresh={isSearchPage}
-                >
-                    <FormattedMessage
-                        locale={localeCode}
-                        for={translations.search.showAllResults}
-                    />
-                </ButtonLink>
-            )}
         </>
     );
 }

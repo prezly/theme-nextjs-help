@@ -71,6 +71,26 @@
     padding-left: $spacing-3;
 }
 
+.bulletedList,
+.htmlContent ul {
+    list-style-type: disc;
+    padding-inline-start: 20px;
+
+    ul {
+        list-style-type: circle;
+    }
+
+    // stylelint-disable-next-line selector-max-compound-selectors
+    ul ul {
+        list-style-type: square;
+    }
+
+    // stylelint-disable-next-line selector-max-compound-selectors
+    ul ul ul {
+        list-style-type: disc;
+    }
+}
+
 .numberedList,
 .htmlContent ol {
     list-style-type: decimal;
@@ -147,10 +167,8 @@
     text-indent: 0;
     table-layout: auto;
     border-collapse: collapse;
-
     margin-top: $spacing-2;
     margin-bottom: $spacing-2;
-
     border: 1px solid var(--prezly-border-color);
 
     th {
@@ -165,12 +183,9 @@
         color: var(--prezly-text-color);
         border: 1px solid var(--prezly-border-color);
         font-size: 95%;
-
         min-width: 40px;
         min-height: 40px;
-
         padding: $spacing-1 * 1.5;
-
         text-align: left;
         vertical-align: middle;
         word-break: keep-all;

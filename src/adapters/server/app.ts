@@ -2,6 +2,8 @@ import type { ContentDelivery } from '@prezly/theme-kit-nextjs';
 import { AppHelperAdapter } from '@prezly/theme-kit-nextjs/server';
 import { headers } from 'next/headers';
 
+import { enrichStoriesWithTags } from '@/utils';
+
 import { initPrezlyClient } from './prezly';
 import { themeSettings } from './theme-settings';
 
@@ -14,12 +16,21 @@ export const { useApp: app } = AppHelperAdapter.connect({
             return contentDelivery.story(params);
         }
 
-        function stories(params: ContentDelivery.stories.SearchParams) {
-            return contentDelivery.stories(params, { include: ['thumbnail_image'] });
+        async function stories(params: ContentDelivery.stories.SearchParams) {
+            const result = await contentDelivery.stories(params, { include: ['thumbnail_image'] });
+            const enrichedStories = await enrichStoriesWithTags(result.stories);
+            return {
+                ...result,
+                stories: enrichedStories,
+            };
         }
 
-        function allStories(params?: ContentDelivery.allStories.SearchParams) {
-            return contentDelivery.allStories(params, { include: ['thumbnail_image'] });
+        async function allStories(params?: ContentDelivery.allStories.SearchParams) {
+            const stories = await contentDelivery.allStories(params, {
+                include: ['thumbnail_image'],
+            });
+            const enrichedStories = await enrichStoriesWithTags(stories);
+            return enrichedStories;
         }
 
         return {
