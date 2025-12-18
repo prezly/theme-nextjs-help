@@ -2,7 +2,7 @@
 
 import type { Category, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ChevronRight, ExternalLink, MessageCircle, Search } from 'lucide-react';
+import { ChevronRight, Code2, Globe, MessageCircle, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -314,7 +314,7 @@ export function CategorySidebar({
                                 'text-muted-foreground hover:text-foreground hover:bg-accent',
                             )}
                         >
-                            <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                            <Globe className="h-4 w-4 flex-shrink-0" />
                             <span>{getDomainFromUrl(mainSiteUrl)}</span>
                         </a>
                     )}
@@ -329,7 +329,7 @@ export function CategorySidebar({
                             'text-muted-foreground hover:text-foreground hover:bg-accent',
                         )}
                     >
-                        <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                        <Code2 className="h-4 w-4 flex-shrink-0" />
                         <span>Prezly Developers</span>
                     </a>
 
