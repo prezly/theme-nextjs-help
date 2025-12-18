@@ -2,7 +2,7 @@
 
 import type { Category, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ChevronRight, ExternalLink, MessageCircle } from 'lucide-react';
+import { ChevronRight, ExternalLink, MessageCircle, Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -27,6 +27,7 @@ interface Props {
     categoryStories?: Record<number, ListStory[]>;
     currentStorySlug?: string;
     isSearchOpen?: boolean;
+    onSearchOpen?: () => void;
 }
 
 export function CategorySidebar({
@@ -38,6 +39,7 @@ export function CategorySidebar({
     categoryStories = {},
     currentStorySlug,
     isSearchOpen = false,
+    onSearchOpen,
 }: Props) {
     const [openSections, setOpenSections] = useState<Set<string>>(new Set());
     const [isHydrated, setIsHydrated] = useState(false);
@@ -141,7 +143,22 @@ export function CategorySidebar({
 
     return (
         <div className="flex flex-col h-full">
-            {/* Header - removed Help Center title */}
+            {/* Search bar - prominent at top */}
+            {onSearchOpen && (
+                <div className="p-4 pb-2">
+                    <button
+                        onClick={onSearchOpen}
+                        className={cn(
+                            'w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors',
+                            'bg-muted/50 hover:bg-muted border border-border',
+                            'text-muted-foreground hover:text-foreground',
+                        )}
+                    >
+                        <Search className="h-4 w-4 flex-shrink-0" />
+                        <span>Search...</span>
+                    </button>
+                </div>
+            )}
 
             {/* Tag info indicator (for management purposes) */}
             {showTagInfo && (

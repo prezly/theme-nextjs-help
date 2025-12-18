@@ -4,9 +4,7 @@ import classNames from 'classnames';
 import { useMemo } from 'react';
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 
-import { Button } from '@/components/Button';
 import { Modal } from '@/components/Modal';
-import { IconClose } from '@/icons';
 import type { SearchSettings } from '@/types';
 import { getSearchClient } from '@/utils';
 
@@ -54,18 +52,7 @@ export function SearchWidget({
         >
             <InstantSearch searchClient={searchClient} indexName={settings.index}>
                 <Configure hitsPerPage={15} filters={filters} />
-                <div className={styles.searchBarWrapper}>
-                    <SearchBar />
-                    <Button
-                        type="button"
-                        variation="secondary"
-                        className={styles.closeButton}
-                        onClick={onClose}
-                        aria-label="Close search"
-                    >
-                        <IconClose className={styles.closeIcon} />
-                    </Button>
-                </div>
+                <SearchBar />
                 <MainPanel
                     categories={categories}
                     isSearchPage={isSearchPage}

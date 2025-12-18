@@ -2,9 +2,8 @@
 
 import type { Newsroom, NewsroomCompanyInformation, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ExternalLink, Search } from 'lucide-react';
+import { ExternalLink, Menu, X } from 'lucide-react';
 import Image, { type ImageLoaderProps } from 'next/image';
-import { useState } from 'react';
 
 import { Link } from '@/components/Link';
 import { Button } from '@/components/ui/ui/button';
@@ -26,7 +25,10 @@ interface Props {
     isHomepage?: boolean;
     mainSiteUrl?: string | null;
     accentColor?: string;
-    onSearchOpenChange?: (isOpen: boolean) => void;
+    isSearchOpen?: boolean;
+    onSearchClose?: () => void;
+    isSidebarOpen?: boolean;
+    onSidebarToggle?: () => void;
 }
 
 export function LinearHeader({
@@ -40,10 +42,12 @@ export function LinearHeader({
     isHomepage = false,
     mainSiteUrl,
     accentColor,
-    onSearchOpenChange,
+    isSearchOpen = false,
+    onSearchClose,
+    isSidebarOpen = false,
+    onSidebarToggle,
 }: Props) {
     const newsroomName = information.name || newsroom.name;
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const logoLoader = ({ src }: ImageLoaderProps) => src;
 
     // Helper function to extract domain from URL
@@ -59,23 +63,10 @@ export function LinearHeader({
         }
     };
 
-    // Search modal handlers
-    const openSearch = () => {
-        setIsSearchOpen(true);
-        onSearchOpenChange?.(true);
-    };
-    const closeSearch = () => {
-        setIsSearchOpen(false);
-        onSearchOpenChange?.(false);
-    };
-
     return (
         <header
             className={cn(
-                'sticky top-0 w-full backdrop-blur transition-all duration-200',
-                isSearchOpen
-                    ? 'z-[60] border-b-muted/30'
-                    : 'z-[60] border-b bg-background/95 supports-[backdrop-filter]:bg-background/60',
+                'sticky top-0 w-full z-[60] border-b bg-background transition-all duration-200',
                 className,
             )}
         >
@@ -108,34 +99,10 @@ export function LinearHeader({
                             <span className="font-bold">{newsroomName}</span>
                         )}
                     </Link>
-
-                    {/* Search icon next to logo - hidden on mobile, shown on desktop */}
-                    {searchSettings && !newsroom.is_hub && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 ml-2 hidden md:flex"
-                            aria-label="Search"
-                            onClick={openSearch}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    )}
                 </div>
 
-                {/* Mobile actions - search icon and open app button */}
+                {/* Mobile actions - Open app button and hamburger menu */}
                 <div className="flex items-center space-x-2 px-4 md:hidden">
-                    {searchSettings && !newsroom.is_hub && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            aria-label="Search"
-                            onClick={openSearch}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    )}
                     <a
                         href="https://rock.prezly.com/"
                         target="_blank"
@@ -154,6 +121,21 @@ export function LinearHeader({
                             Open app
                         </Button>
                     </a>
+                    {onSidebarToggle && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label={isSidebarOpen ? 'Close menu' : 'Open menu'}
+                            onClick={onSidebarToggle}
+                        >
+                            {isSidebarOpen ? (
+                                <X className="h-4 w-4" />
+                            ) : (
+                                <Menu className="h-4 w-4" />
+                            )}
+                        </Button>
+                    )}
                 </div>
 
                 {/* Breadcrumbs section - hidden on mobile */}
@@ -207,14 +189,14 @@ export function LinearHeader({
             </div>
 
             {/* Search Modal */}
-            {searchSettings && (
+            {searchSettings && onSearchClose && (
                 <SearchWidget
                     settings={searchSettings}
                     localeCode={localeCode}
                     categories={categories}
                     isOpen={isSearchOpen}
                     isSearchPage={false}
-                    onClose={closeSearch}
+                    onClose={onSearchClose}
                     newsrooms={[newsroom]}
                     newsroomUuid={newsroom.uuid}
                     className="z-[70]"

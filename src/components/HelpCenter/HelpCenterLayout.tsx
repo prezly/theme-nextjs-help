@@ -2,11 +2,9 @@
 
 import type { Category, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { Button } from '@/components/ui/ui/button';
 import { ScrollArea } from '@/components/ui/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { SearchSettings } from '@/types';
@@ -87,34 +85,26 @@ export function HelpCenterLayout({
                     isHomepage={isHomepage}
                     mainSiteUrl={mainSiteUrl}
                     accentColor={accentColor}
-                    onSearchOpenChange={setIsSearchOpen}
+                    isSearchOpen={isSearchOpen}
+                    onSearchClose={() => setIsSearchOpen(false)}
+                    isSidebarOpen={isSidebarOpen}
+                    onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
                 />
             )}
 
             <div className="flex min-h-[calc(100vh-3.5rem)]">
-                {/* Mobile menu button */}
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                        'fixed left-4 z-50 md:hidden',
-                        'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
-                        isPreview ? 'top-[calc(4rem+44px)]' : 'top-16',
-                    )}
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    aria-label="Toggle navigation menu"
-                >
-                    {isSidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                </Button>
-
                 {/* Left Sidebar - Navigation - Fixed/Sticky */}
                 <aside
                     className={cn(
-                        'fixed bottom-0 left-0 z-[60] w-80 backdrop-blur transition-all duration-200',
+                        'fixed bottom-0 left-0 z-[60] transition-all duration-200',
                         'transform transition-transform duration-300 ease-in-out',
+                        // Mobile: full width, solid background
+                        'w-full bg-background',
+                        // Desktop: fixed width, with border and backdrop blur
+                        'md:w-80 md:backdrop-blur',
                         isSearchOpen
-                            ? 'border-r-muted/30'
-                            : 'border-r bg-background/95 supports-[backdrop-filter]:bg-background/60',
+                            ? 'md:border-r-muted/30'
+                            : 'md:border-r md:bg-background/95 md:supports-[backdrop-filter]:bg-background/60',
                         isHydrated && isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
                         'md:translate-x-0', // Always visible on desktop
                         isPreview ? 'top-[calc(3.5rem+44px)]' : 'top-14',
@@ -130,6 +120,7 @@ export function HelpCenterLayout({
                             categoryStories={categoryStories}
                             currentStorySlug={currentStorySlug}
                             isSearchOpen={isSearchOpen}
+                            onSearchOpen={() => setIsSearchOpen(true)}
                         />
                     </ScrollArea>
                 </aside>
@@ -163,19 +154,33 @@ export function HelpCenterLayout({
                     )}
                 </div>
 
-                {/* Overlay for mobile */}
-                {isHydrated && isSidebarOpen && (
+                {/* Overlay for mobile sidebar or search */}
+                {isHydrated && (isSidebarOpen || isSearchOpen) && (
                     <div
-                        className="fixed inset-0 z-30 bg-black/50 md:hidden"
-                        onClick={() => setIsSidebarOpen(false)}
+                        className={cn(
+                            'fixed inset-0 bg-black/50 transition-opacity duration-200',
+                            // When search is open, overlay should be below search panel but above everything else
+                            isSearchOpen ? 'z-[65]' : 'z-30 md:hidden',
+                        )}
+                        onClick={() => {
+                            if (isSearchOpen) {
+                                setIsSearchOpen(false);
+                            } else {
+                                setIsSidebarOpen(false);
+                            }
+                        }}
                         onKeyDown={(event) => {
                             if (event.key === 'Escape') {
-                                setIsSidebarOpen(false);
+                                if (isSearchOpen) {
+                                    setIsSearchOpen(false);
+                                } else {
+                                    setIsSidebarOpen(false);
+                                }
                             }
                         }}
                         role="button"
                         tabIndex={0}
-                        aria-label="Close sidebar"
+                        aria-label={isSearchOpen ? 'Close search' : 'Close sidebar'}
                     />
                 )}
             </div>
