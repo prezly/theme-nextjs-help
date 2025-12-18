@@ -101,8 +101,6 @@ export function Share({
         <>
             <Divider />
             <div>
-                <h2>{trim(formatMessage(translations.actions.share))}</h2>
-
                 <div
                     className={classNames(styles.sharingOptions, {
                         [styles.inline]: socialShareButtonsCount === 1 && actionsButtonsCount === 1,
@@ -175,8 +173,4 @@ export function Share({
             </div>
         </>
     );
-}
-
-function trim(text: string) {
-    return text.replace(/^[\s:]+|[\s:]+$/g, '');
 }

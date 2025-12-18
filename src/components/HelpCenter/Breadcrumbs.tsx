@@ -28,23 +28,23 @@ export function Breadcrumbs({
         return parts.length > 1 ? parts[parts.length - 1] : categoryName;
     };
     return (
-        <nav className={cn('flex items-center space-x-1 text-sm text-muted-foreground', className)}>
-            {/* Home link */}
+        <nav className={cn('flex items-center text-sm text-muted-foreground min-w-0', className)}>
+            {/* Home link - icon only on small screens, with text on larger */}
             <Link
                 href={{ routeName: 'index', params: { localeCode } }}
-                className="flex items-center hover:text-foreground transition-colors text-decoration-none"
+                className="flex items-center hover:text-foreground transition-colors text-decoration-none flex-shrink-0"
             >
-                <Home className="h-4 w-4 mr-1" />
-                <span>Home</span>
+                <Home className="h-4 w-4" />
+                <span className="hidden lg:inline ml-1">Home</span>
             </Link>
 
             {/* Show categories and story title only if not homepage */}
             {!isHomepage && (
                 <>
-                    {/* Categories */}
+                    {/* Categories - truncate on smaller screens */}
                     {categories.map((category) => (
-                        <div key={category.id} className="flex items-center space-x-1">
-                            <ChevronRight className="h-4 w-4" />
+                        <div key={category.id} className="flex items-center min-w-0 flex-shrink">
+                            <ChevronRight className="h-4 w-4 flex-shrink-0 mx-1" />
                             <Link
                                 href={{
                                     routeName: 'category',
@@ -53,17 +53,17 @@ export function Breadcrumbs({
                                         slug: category.slug,
                                     },
                                 }}
-                                className="hover:text-foreground transition-colors text-decoration-none"
+                                className="hover:text-foreground transition-colors text-decoration-none truncate"
                             >
                                 {getCleanCategoryName(category.name)}
                             </Link>
                         </div>
                     ))}
 
-                    {/* Story title */}
+                    {/* Story title - truncate to fit available space */}
                     {storyTitle && (
-                        <div className="flex items-center space-x-1">
-                            <ChevronRight className="h-4 w-4" />
+                        <div className="flex items-center min-w-0 flex-1">
+                            <ChevronRight className="h-4 w-4 flex-shrink-0 mx-1" />
                             <span className="text-foreground font-medium truncate">
                                 {storyTitle}
                             </span>

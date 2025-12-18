@@ -7,57 +7,46 @@ import { FormattedDate } from '@/adapters/client';
 import { app } from '@/adapters/server';
 import { CategoriesList } from '@/components/CategoriesList';
 import { ContentRenderer } from '@/components/ContentRenderer';
-import { getRenderableSocialSharingNetworks, SocialShare } from '@/components/SocialShare';
-import type { StoryActions, ThemeSettings } from '@/theme-settings';
+import type { ThemeSettings } from '@/theme-settings';
 
 import { Embargo } from './Embargo';
 import { HeaderImageRenderer } from './HeaderImageRenderer';
 import { HeaderRenderer } from './HeaderRenderer';
 import { getHeaderAlignment } from './lib';
 import { RelatedStories } from './RelatedStories';
-import { Share } from './Share';
-import type { SharingOptions } from './type';
+import { StoryNavigation } from './StoryNavigation';
 
 import styles from './Story.module.scss';
+
+interface AdjacentStory {
+    slug: string;
+    title: string;
+}
 
 type Props = {
     showDate: ThemeSettings['show_date'];
     story: ExtendedStory;
     relatedStories: StoryType[];
     withHeaderImage: ThemeSettings['header_image_placement'];
-    sharingOptions: SharingOptions;
-    actions: StoryActions;
     withBadges: boolean;
     hasRelatedStories?: boolean;
+    adjacentStories?: {
+        previousStory: AdjacentStory | null;
+        nextStory: AdjacentStory | null;
+    };
 };
 
 export async function Story({
-    actions,
     relatedStories,
-    sharingOptions,
     showDate,
     story,
     withBadges,
     withHeaderImage,
     hasRelatedStories,
+    adjacentStories,
 }: Props) {
-    const {
-        links,
-        visibility,
-        thumbnail_url: thumbnailUrl,
-        title,
-        slug,
-        uuid,
-        uploadcare_assets_group_uuid,
-    } = story;
     const nodes = JSON.parse(story.content);
     const [headerImageDocument, mainDocument] = pullHeaderImageNode(nodes, withHeaderImage);
-    const sharingText = story.social_text || story.title;
-    const sharingUrl = links.short || links.newsroom_view;
-    const sharingSocialNetworks = getRenderableSocialSharingNetworks(
-        sharingOptions.sharing_actions,
-        { thumbnailUrl, visibility },
-    );
 
     const headerAlignment = getHeaderAlignment(nodes);
 
@@ -94,30 +83,13 @@ export async function Story({
                             <FormattedDate value={story.published_at} />
                         </p>
                     )}
-                    {sharingOptions.sharing_placement.includes('top') && (
-                        <SocialShare
-                            socialNetworks={sharingSocialNetworks}
-                            url={sharingUrl}
-                            text={sharingText}
-                            uuid={uuid}
-                            thumbnailUrl={thumbnailUrl}
-                            trackingContext="Story Page Header"
-                        />
-                    )}
                 </div>
                 <ContentRenderer story={story} nodes={mainDocument} />
             </article>
-            {sharingOptions.sharing_placement.includes('bottom') && (
-                <Share
-                    actions={actions}
-                    thumbnailUrl={thumbnailUrl}
-                    socialNetworks={sharingSocialNetworks}
-                    slug={slug}
-                    title={title}
-                    text={sharingText}
-                    uploadcareAssetsGroupUuid={uploadcare_assets_group_uuid}
-                    url={sharingUrl}
-                    uuid={uuid}
+            {adjacentStories && (
+                <StoryNavigation
+                    previousStory={adjacentStories.previousStory}
+                    nextStory={adjacentStories.nextStory}
                 />
             )}
             <RelatedStories

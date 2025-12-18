@@ -7,12 +7,22 @@ import type { ReactNode } from 'react';
 
 import { ScrollArea } from '@/components/ui/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import type { StoryActions } from '@/theme-settings';
 import type { SearchSettings } from '@/types';
 import { isPreviewActive } from '@/utils';
 
 import { CategorySidebar } from './CategorySidebar';
 import { LinearHeader } from './LinearHeader';
 import { TableOfContents } from './TableOfContents';
+
+interface StoryActionsData {
+    actions: StoryActions;
+    storyUrl: string | null;
+    storyUuid: string;
+    storyTitle: string;
+    storySlug: string;
+    uploadcareAssetsGroupUuid: string | null;
+}
 
 interface Props {
     localeCode: Locale.Code;
@@ -32,6 +42,7 @@ interface Props {
     mainSiteUrl?: string | null;
     accentColor?: string;
     currentStorySlug?: string;
+    storyActionsData?: StoryActionsData;
 }
 
 export function HelpCenterLayout({
@@ -52,6 +63,7 @@ export function HelpCenterLayout({
     mainSiteUrl,
     accentColor,
     currentStorySlug,
+    storyActionsData,
 }: Props) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
@@ -83,12 +95,12 @@ export function HelpCenterLayout({
                     categories={breadcrumbCategories}
                     storyTitle={storyTitle}
                     isHomepage={isHomepage}
-                    mainSiteUrl={mainSiteUrl}
                     accentColor={accentColor}
                     isSearchOpen={isSearchOpen}
                     onSearchClose={() => setIsSearchOpen(false)}
                     isSidebarOpen={isSidebarOpen}
                     onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+                    storyActionsData={storyActionsData}
                 />
             )}
 
@@ -121,6 +133,7 @@ export function HelpCenterLayout({
                             currentStorySlug={currentStorySlug}
                             isSearchOpen={isSearchOpen}
                             onSearchOpen={() => setIsSearchOpen(true)}
+                            mainSiteUrl={mainSiteUrl}
                         />
                     </ScrollArea>
                 </aside>
