@@ -9,10 +9,21 @@ import { Link } from '@/components/Link';
 import { Button } from '@/components/ui/ui/button';
 import { cn } from '@/lib/utils';
 import { SearchWidget } from '@/modules/Header/ui/SearchWidget';
+import type { StoryActions } from '@/theme-settings';
 import type { SearchSettings } from '@/types';
 import { getUploadcareImage } from '@/utils';
 
 import { Breadcrumbs } from './Breadcrumbs';
+import { StoryActionsDropdown } from './StoryActionsDropdown';
+
+interface StoryActionsData {
+    actions: StoryActions;
+    storyUrl: string | null;
+    storyUuid: string;
+    storyTitle: string;
+    storySlug: string;
+    uploadcareAssetsGroupUuid: string | null;
+}
 
 interface Props {
     localeCode: Locale.Code;
@@ -28,6 +39,7 @@ interface Props {
     onSearchClose?: () => void;
     isSidebarOpen?: boolean;
     onSidebarToggle?: () => void;
+    storyActionsData?: StoryActionsData;
 }
 
 export function LinearHeader({
@@ -44,6 +56,7 @@ export function LinearHeader({
     onSearchClose,
     isSidebarOpen = false,
     onSidebarToggle,
+    storyActionsData,
 }: Props) {
     const newsroomName = information.name || newsroom.name;
     const logoLoader = ({ src }: ImageLoaderProps) => src;
@@ -134,6 +147,20 @@ export function LinearHeader({
 
                     {/* Right side actions */}
                     <div className="flex items-center space-x-2">
+                        {/* Story actions dropdown */}
+                        {storyActionsData && (
+                            <StoryActionsDropdown
+                                actions={storyActionsData.actions}
+                                storyUrl={storyActionsData.storyUrl}
+                                storyUuid={storyActionsData.storyUuid}
+                                storyTitle={storyActionsData.storyTitle}
+                                storySlug={storyActionsData.storySlug}
+                                uploadcareAssetsGroupUuid={
+                                    storyActionsData.uploadcareAssetsGroupUuid
+                                }
+                            />
+                        )}
+
                         {/* Open app button - Linear Docs style with dynamic accent color */}
                         <a
                             href="https://rock.prezly.com/"

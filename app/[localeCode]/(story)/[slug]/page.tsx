@@ -115,6 +115,19 @@ export default async function StoryPage(props: Props) {
                 mainSiteUrl={themeSettings.main_site_url}
                 accentColor={themeSettings.accent_color}
                 currentStorySlug={story.slug}
+                storyActionsData={{
+                    actions: {
+                        show_copy_content: themeSettings.show_copy_content,
+                        show_copy_url: themeSettings.show_copy_url,
+                        show_download_assets: themeSettings.show_download_assets,
+                        show_download_pdf: themeSettings.show_download_pdf,
+                    },
+                    storyUrl: story.links.short || story.links.newsroom_view,
+                    storyUuid: story.uuid,
+                    storyTitle: story.title,
+                    storySlug: story.slug,
+                    uploadcareAssetsGroupUuid: story.uploadcare_assets_group_uuid,
+                }}
             >
                 <Story
                     story={story}
@@ -122,16 +135,6 @@ export default async function StoryPage(props: Props) {
                     withHeaderImage={themeSettings.header_image_placement}
                     relatedStories={themeSettings.show_read_more ? relatedStories : []}
                     hasRelatedStories={themeSettings.show_read_more}
-                    actions={{
-                        show_copy_content: themeSettings.show_copy_content,
-                        show_copy_url: themeSettings.show_copy_url,
-                        show_download_assets: themeSettings.show_download_assets,
-                        show_download_pdf: themeSettings.show_download_pdf,
-                    }}
-                    sharingOptions={{
-                        sharing_placement: themeSettings.sharing_placement,
-                        sharing_actions: themeSettings.sharing_actions,
-                    }}
                     withBadges={themeSettings.story_card_variant === 'boxed'}
                     adjacentStories={adjacentStories}
                 />
