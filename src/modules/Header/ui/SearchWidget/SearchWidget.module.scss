@@ -1,8 +1,10 @@
 .modal {
     padding: 0 !important;
     background: var(--prezly-background-color);
-    max-width: calc(100vw - 2rem) !important;
-    margin: 1rem !important;
+    max-width: min(640px, calc(100vw - 2rem)) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 15vh !important;
 
     @include mobile-only {
         margin-top: 4rem !important;
