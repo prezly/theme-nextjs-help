@@ -83,7 +83,6 @@ export function HelpCenterLayout({
                     categories={breadcrumbCategories}
                     storyTitle={storyTitle}
                     isHomepage={isHomepage}
-                    mainSiteUrl={mainSiteUrl}
                     accentColor={accentColor}
                     isSearchOpen={isSearchOpen}
                     onSearchClose={() => setIsSearchOpen(false)}
@@ -121,6 +120,7 @@ export function HelpCenterLayout({
                             currentStorySlug={currentStorySlug}
                             isSearchOpen={isSearchOpen}
                             onSearchOpen={() => setIsSearchOpen(true)}
+                            mainSiteUrl={mainSiteUrl}
                         />
                     </ScrollArea>
                 </aside>

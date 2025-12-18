@@ -2,7 +2,7 @@
 
 import type { Newsroom, NewsroomCompanyInformation, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ExternalLink, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Image, { type ImageLoaderProps } from 'next/image';
 
 import { Link } from '@/components/Link';
@@ -23,7 +23,6 @@ interface Props {
     categories?: TranslatedCategory[];
     storyTitle?: string;
     isHomepage?: boolean;
-    mainSiteUrl?: string | null;
     accentColor?: string;
     isSearchOpen?: boolean;
     onSearchClose?: () => void;
@@ -40,7 +39,6 @@ export function LinearHeader({
     categories = [],
     storyTitle,
     isHomepage = false,
-    mainSiteUrl,
     accentColor,
     isSearchOpen = false,
     onSearchClose,
@@ -49,19 +47,6 @@ export function LinearHeader({
 }: Props) {
     const newsroomName = information.name || newsroom.name;
     const logoLoader = ({ src }: ImageLoaderProps) => src;
-
-    // Helper function to extract domain from URL
-    const getDomainFromUrl = (url: string) => {
-        try {
-            return new URL(url).hostname.replace('www.', '');
-        } catch {
-            // Fallback if URL is malformed
-            return url
-                .replace(/^https?:\/\//, '')
-                .replace(/^www\./, '')
-                .split('/')[0];
-        }
-    };
 
     return (
         <header
@@ -149,19 +134,6 @@ export function LinearHeader({
 
                     {/* Right side actions */}
                     <div className="flex items-center space-x-2">
-                        {/* Main site link as text */}
-                        {mainSiteUrl && mainSiteUrl.trim() !== '' && (
-                            <a
-                                href={mainSiteUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                <span>{getDomainFromUrl(mainSiteUrl)}</span>
-                                <ExternalLink className="h-3 w-3" />
-                            </a>
-                        )}
-
                         {/* Open app button - Linear Docs style with dynamic accent color */}
                         <a
                             href="https://rock.prezly.com/"

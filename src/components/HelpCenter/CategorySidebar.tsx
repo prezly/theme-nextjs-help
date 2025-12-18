@@ -28,6 +28,7 @@ interface Props {
     currentStorySlug?: string;
     isSearchOpen?: boolean;
     onSearchOpen?: () => void;
+    mainSiteUrl?: string | null;
 }
 
 export function CategorySidebar({
@@ -40,6 +41,7 @@ export function CategorySidebar({
     currentStorySlug,
     isSearchOpen = false,
     onSearchOpen,
+    mainSiteUrl,
 }: Props) {
     const [openSections, setOpenSections] = useState<Set<string>>(new Set());
     const [isHydrated, setIsHydrated] = useState(false);
@@ -126,6 +128,18 @@ export function CategorySidebar({
     const getCleanCategoryName = (categoryName: string) => {
         const parts = categoryName.split(' / ');
         return parts.length > 1 ? parts[parts.length - 1] : categoryName;
+    };
+
+    // Helper function to extract domain from URL
+    const getDomainFromUrl = (url: string) => {
+        try {
+            return new URL(url).hostname.replace('www.', '');
+        } catch {
+            return url
+                .replace(/^https?:\/\//, '')
+                .replace(/^www\./, '')
+                .split('/')[0];
+        }
     };
 
     const toggleSection = (categoryId: number) => {
@@ -289,6 +303,22 @@ export function CategorySidebar({
                 )}
             >
                 <div className="space-y-2">
+                    {/* Main site link */}
+                    {mainSiteUrl && mainSiteUrl.trim() !== '' && (
+                        <a
+                            href={mainSiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                                'flex items-center gap-3 px-3 py-2 text-sm transition-colors rounded-md',
+                                'text-muted-foreground hover:text-foreground hover:bg-accent',
+                            )}
+                        >
+                            <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                            <span>{getDomainFromUrl(mainSiteUrl)}</span>
+                        </a>
+                    )}
+
                     {/* Prezly Developers */}
                     <a
                         href="https://developers.prezly.com"
