@@ -27,6 +27,9 @@
 }
 
 .dialog {
+    // Must be above the page overlay (z-65)
+    z-index: 70 !important;
+
     @include mobile-only {
         z-index: 100 !important;
     }
