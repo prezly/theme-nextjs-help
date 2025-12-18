@@ -16,3 +16,4 @@ export { parsePreviewSearchParams } from './parsePreviewSearchParams';
 export * from './previewUtils';
 export { withoutUndefined } from './withoutUndefined';
 export { enrichStoriesWithTags, sortStoriesByTagOrder } from './enrichStoriesWithTags';
+export { getAdjacentStoriesByTag, fetchStoryTags } from './getAdjacentStoriesByTag';

@@ -16,9 +16,15 @@ import { HeaderRenderer } from './HeaderRenderer';
 import { getHeaderAlignment } from './lib';
 import { RelatedStories } from './RelatedStories';
 import { Share } from './Share';
+import { StoryNavigation } from './StoryNavigation';
 import type { SharingOptions } from './type';
 
 import styles from './Story.module.scss';
+
+interface AdjacentStory {
+    slug: string;
+    title: string;
+}
 
 type Props = {
     showDate: ThemeSettings['show_date'];
@@ -29,6 +35,10 @@ type Props = {
     actions: StoryActions;
     withBadges: boolean;
     hasRelatedStories?: boolean;
+    adjacentStories?: {
+        previousStory: AdjacentStory | null;
+        nextStory: AdjacentStory | null;
+    };
 };
 
 export async function Story({
@@ -40,6 +50,7 @@ export async function Story({
     withBadges,
     withHeaderImage,
     hasRelatedStories,
+    adjacentStories,
 }: Props) {
     const {
         links,
@@ -118,6 +129,12 @@ export async function Story({
                     uploadcareAssetsGroupUuid={uploadcare_assets_group_uuid}
                     url={sharingUrl}
                     uuid={uuid}
+                />
+            )}
+            {adjacentStories && (
+                <StoryNavigation
+                    previousStory={adjacentStories.previousStory}
+                    nextStory={adjacentStories.nextStory}
                 />
             )}
             <RelatedStories

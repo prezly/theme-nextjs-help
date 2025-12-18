@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { app, generateStoryPageMetadata, getSearchSettings } from '@/adapters/server';
 import { HelpCenterLayout } from '@/components/HelpCenter';
 import { Story } from '@/modules/Story';
-import { parsePreviewSearchParams } from '@/utils';
+import { fetchStoryTags, getAdjacentStoriesByTag, parsePreviewSearchParams } from '@/utils';
 
 import { Broadcast } from '../components';
 
@@ -70,6 +70,32 @@ export default async function StoryPage(props: Props) {
         categoryStories[category.id] = stories;
     }
 
+    // Fetch adjacent stories for prev/next navigation
+    // Only if the story is in a featured category and has a numeric tag
+    const storyTags = await fetchStoryTags(story.uuid);
+    const storyFeaturedCategory = story.categories.find((cat) =>
+        featuredCategories.some((fc) => fc.id === cat.id),
+    );
+
+    let adjacentStories: {
+        previousStory: { slug: string; title: string } | null;
+        nextStory: { slug: string; title: string } | null;
+    } = { previousStory: null, nextStory: null };
+    if (storyFeaturedCategory && storyTags.length > 0) {
+        // Get all stories in the featured category for navigation
+        const { stories: allCategoryStories } = await app().stories({
+            categories: [{ id: storyFeaturedCategory.id }],
+            limit: 100, // Get enough stories to find adjacent ones
+            locale: { code: localeCode },
+        });
+        adjacentStories = await getAdjacentStoriesByTag(
+            story,
+            storyTags,
+            categories,
+            allCategoryStories,
+        );
+    }
+
     return (
         <>
             <Broadcast story={story} />
@@ -107,6 +133,7 @@ export default async function StoryPage(props: Props) {
                         sharing_actions: themeSettings.sharing_actions,
                     }}
                     withBadges={themeSettings.story_card_variant === 'boxed'}
+                    adjacentStories={adjacentStories}
                 />
             </HelpCenterLayout>
         </>
