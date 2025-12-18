@@ -96,11 +96,15 @@ export function HelpCenterLayout({
                 {/* Left Sidebar - Navigation - Fixed/Sticky */}
                 <aside
                     className={cn(
-                        'fixed bottom-0 left-0 z-[60] w-80 backdrop-blur transition-all duration-200',
+                        'fixed bottom-0 left-0 z-[60] transition-all duration-200',
                         'transform transition-transform duration-300 ease-in-out',
+                        // Mobile: full width, solid background
+                        'w-full bg-background',
+                        // Desktop: fixed width, with border and backdrop blur
+                        'md:w-80 md:backdrop-blur',
                         isSearchOpen
-                            ? 'border-r-muted/30'
-                            : 'border-r bg-background/95 supports-[backdrop-filter]:bg-background/60',
+                            ? 'md:border-r-muted/30'
+                            : 'md:border-r md:bg-background/95 md:supports-[backdrop-filter]:bg-background/60',
                         isHydrated && isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
                         'md:translate-x-0', // Always visible on desktop
                         isPreview ? 'top-[calc(3.5rem+44px)]' : 'top-14',

@@ -66,10 +66,7 @@ export function LinearHeader({
     return (
         <header
             className={cn(
-                'sticky top-0 w-full backdrop-blur transition-all duration-200',
-                isSearchOpen
-                    ? 'z-[60] border-b-muted/30'
-                    : 'z-[60] border-b bg-background/95 supports-[backdrop-filter]:bg-background/60',
+                'sticky top-0 w-full z-[60] border-b bg-background transition-all duration-200',
                 className,
             )}
         >
