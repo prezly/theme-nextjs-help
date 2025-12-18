@@ -85,7 +85,9 @@ export function HelpCenterLayout({
                     isHomepage={isHomepage}
                     mainSiteUrl={mainSiteUrl}
                     accentColor={accentColor}
-                    onSearchOpenChange={setIsSearchOpen}
+                    isSearchOpen={isSearchOpen}
+                    onSearchOpen={() => setIsSearchOpen(true)}
+                    onSearchClose={() => setIsSearchOpen(false)}
                     isSidebarOpen={isSidebarOpen}
                     onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
                 />

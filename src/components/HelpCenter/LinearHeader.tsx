@@ -4,7 +4,6 @@ import type { Newsroom, NewsroomCompanyInformation, TranslatedCategory } from '@
 import type { Locale } from '@prezly/theme-kit-nextjs';
 import { ExternalLink, Menu, Search, X } from 'lucide-react';
 import Image, { type ImageLoaderProps } from 'next/image';
-import { useState } from 'react';
 
 import { Link } from '@/components/Link';
 import { Button } from '@/components/ui/ui/button';
@@ -26,7 +25,9 @@ interface Props {
     isHomepage?: boolean;
     mainSiteUrl?: string | null;
     accentColor?: string;
-    onSearchOpenChange?: (isOpen: boolean) => void;
+    isSearchOpen?: boolean;
+    onSearchOpen?: () => void;
+    onSearchClose?: () => void;
     isSidebarOpen?: boolean;
     onSidebarToggle?: () => void;
 }
@@ -42,12 +43,13 @@ export function LinearHeader({
     isHomepage = false,
     mainSiteUrl,
     accentColor,
-    onSearchOpenChange,
+    isSearchOpen = false,
+    onSearchOpen,
+    onSearchClose,
     isSidebarOpen = false,
     onSidebarToggle,
 }: Props) {
     const newsroomName = information.name || newsroom.name;
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const logoLoader = ({ src }: ImageLoaderProps) => src;
 
     // Helper function to extract domain from URL
@@ -61,16 +63,6 @@ export function LinearHeader({
                 .replace(/^www\./, '')
                 .split('/')[0];
         }
-    };
-
-    // Search modal handlers
-    const openSearch = () => {
-        setIsSearchOpen(true);
-        onSearchOpenChange?.(true);
-    };
-    const closeSearch = () => {
-        setIsSearchOpen(false);
-        onSearchOpenChange?.(false);
     };
 
     return (
@@ -114,13 +106,13 @@ export function LinearHeader({
                     </Link>
 
                     {/* Search icon next to logo - hidden on mobile, shown on desktop */}
-                    {searchSettings && !newsroom.is_hub && (
+                    {searchSettings && !newsroom.is_hub && onSearchOpen && (
                         <Button
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 ml-2 hidden md:flex"
                             aria-label="Search"
-                            onClick={openSearch}
+                            onClick={onSearchOpen}
                         >
                             <Search className="h-4 w-4" />
                         </Button>
@@ -215,14 +207,14 @@ export function LinearHeader({
             </div>
 
             {/* Search Modal */}
-            {searchSettings && (
+            {searchSettings && onSearchClose && (
                 <SearchWidget
                     settings={searchSettings}
                     localeCode={localeCode}
                     categories={categories}
                     isOpen={isSearchOpen}
                     isSearchPage={false}
-                    onClose={closeSearch}
+                    onClose={onSearchClose}
                     newsrooms={[newsroom]}
                     newsroomUuid={newsroom.uuid}
                     className="z-[70]"
