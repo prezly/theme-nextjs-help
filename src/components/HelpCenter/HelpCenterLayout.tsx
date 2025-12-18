@@ -2,11 +2,9 @@
 
 import type { Category, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { Button } from '@/components/ui/ui/button';
 import { ScrollArea } from '@/components/ui/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import type { SearchSettings } from '@/types';
@@ -88,25 +86,12 @@ export function HelpCenterLayout({
                     mainSiteUrl={mainSiteUrl}
                     accentColor={accentColor}
                     onSearchOpenChange={setIsSearchOpen}
+                    isSidebarOpen={isSidebarOpen}
+                    onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)}
                 />
             )}
 
             <div className="flex min-h-[calc(100vh-3.5rem)]">
-                {/* Mobile menu button */}
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                        'fixed left-4 z-50 md:hidden',
-                        'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
-                        isPreview ? 'top-[calc(4rem+44px)]' : 'top-16',
-                    )}
-                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    aria-label="Toggle navigation menu"
-                >
-                    {isSidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-                </Button>
-
                 {/* Left Sidebar - Navigation - Fixed/Sticky */}
                 <aside
                     className={cn(
@@ -130,6 +115,7 @@ export function HelpCenterLayout({
                             categoryStories={categoryStories}
                             currentStorySlug={currentStorySlug}
                             isSearchOpen={isSearchOpen}
+                            onSearchOpen={() => setIsSearchOpen(true)}
                         />
                     </ScrollArea>
                 </aside>

@@ -2,7 +2,7 @@
 
 import type { Newsroom, NewsroomCompanyInformation, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ExternalLink, Search } from 'lucide-react';
+import { ExternalLink, Menu, Search, X } from 'lucide-react';
 import Image, { type ImageLoaderProps } from 'next/image';
 import { useState } from 'react';
 
@@ -27,6 +27,8 @@ interface Props {
     mainSiteUrl?: string | null;
     accentColor?: string;
     onSearchOpenChange?: (isOpen: boolean) => void;
+    isSidebarOpen?: boolean;
+    onSidebarToggle?: () => void;
 }
 
 export function LinearHeader({
@@ -41,6 +43,8 @@ export function LinearHeader({
     mainSiteUrl,
     accentColor,
     onSearchOpenChange,
+    isSidebarOpen = false,
+    onSidebarToggle,
 }: Props) {
     const newsroomName = information.name || newsroom.name;
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -123,19 +127,8 @@ export function LinearHeader({
                     )}
                 </div>
 
-                {/* Mobile actions - search icon and open app button */}
+                {/* Mobile actions - Open app button and hamburger menu */}
                 <div className="flex items-center space-x-2 px-4 md:hidden">
-                    {searchSettings && !newsroom.is_hub && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            aria-label="Search"
-                            onClick={openSearch}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    )}
                     <a
                         href="https://rock.prezly.com/"
                         target="_blank"
@@ -154,6 +147,21 @@ export function LinearHeader({
                             Open app
                         </Button>
                     </a>
+                    {onSidebarToggle && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label={isSidebarOpen ? 'Close menu' : 'Open menu'}
+                            onClick={onSidebarToggle}
+                        >
+                            {isSidebarOpen ? (
+                                <X className="h-4 w-4" />
+                            ) : (
+                                <Menu className="h-4 w-4" />
+                            )}
+                        </Button>
+                    )}
                 </div>
 
                 {/* Breadcrumbs section - hidden on mobile */}
