@@ -1,15 +1,14 @@
 'use client';
 
 import { ACTIONS, DOWNLOAD } from '@prezly/analytics-nextjs';
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { Check, ChevronDown, Copy, FileDown, FolderDown, Link2 } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/ui/button';
 import { cn } from '@/lib/utils';
+import { copyStoryText } from '@/modules/Story/Share/utils/copyStoryText';
 import { getAssetsArchiveDownloadUrl } from '@/modules/Story/Share/utils/getAssetsArchiveDownloadUrl';
 import { getStoryPdfUrl } from '@/modules/Story/Share/utils/getStoryPdfUrl';
-import { copyStoryText } from '@/modules/Story/Share/utils/copyStoryText';
 import type { StoryActions } from '@/theme-settings';
 import { analytics } from '@/utils';
 
@@ -22,6 +21,17 @@ interface Props {
     uploadcareAssetsGroupUuid: string | null;
 }
 
+interface ActionItem {
+    id: string;
+    label: string;
+    icon: typeof Copy;
+    onClick: () => void;
+    isLoading?: boolean;
+    successLabel?: string;
+    isSuccess?: boolean;
+    href?: string;
+}
+
 export function StoryActionsDropdown({
     actions,
     storyUrl,
@@ -30,23 +40,43 @@ export function StoryActionsDropdown({
     storySlug,
     uploadcareAssetsGroupUuid,
 }: Props) {
+    const [isOpen, setIsOpen] = useState(false);
     const [copiedUrl, setCopiedUrl] = useState(false);
     const [copiedText, setCopiedText] = useState(false);
     const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const assetsUrl = uploadcareAssetsGroupUuid
         ? getAssetsArchiveDownloadUrl(uploadcareAssetsGroupUuid, storySlug)
         : undefined;
 
-    const hasAnyAction =
-        actions.show_copy_url ||
-        actions.show_copy_content ||
-        actions.show_download_pdf ||
-        (actions.show_download_assets && assetsUrl);
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
 
-    if (!hasAnyAction) {
-        return null;
-    }
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [isOpen]);
+
+    // Close on escape key
+    useEffect(() => {
+        function handleEscape(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
+                setIsOpen(false);
+            }
+        }
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            return () => document.removeEventListener('keydown', handleEscape);
+        }
+    }, [isOpen]);
 
     const handleCopyUrl = async () => {
         if (!storyUrl) return;
@@ -85,117 +115,174 @@ export function StoryActionsDropdown({
         analytics.track(DOWNLOAD.STORY_ASSETS, { id: storyUuid });
     };
 
-    return (
-        <Menu as="div" className="relative">
-            <MenuButton as={Fragment}>
-                <Button variant="outline" size="sm" className="h-8 px-3 text-sm font-medium gap-1">
-                    Actions
-                    <ChevronDown className="h-3 w-3" />
-                </Button>
-            </MenuButton>
+    // Build list of available actions
+    const availableActions: ActionItem[] = [];
 
-            <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
+    if (actions.show_copy_content) {
+        availableActions.push({
+            id: 'copy-text',
+            label: 'Copy text',
+            successLabel: 'Copied!',
+            icon: Copy,
+            onClick: handleCopyText,
+            isSuccess: copiedText,
+        });
+    }
+
+    if (actions.show_copy_url && storyUrl) {
+        availableActions.push({
+            id: 'copy-url',
+            label: 'Copy URL',
+            successLabel: 'Copied!',
+            icon: Link2,
+            onClick: handleCopyUrl,
+            isSuccess: copiedUrl,
+        });
+    }
+
+    if (actions.show_download_pdf) {
+        availableActions.push({
+            id: 'download-pdf',
+            label: 'Download PDF',
+            icon: FileDown,
+            onClick: handleDownloadPdf,
+            isLoading: isDownloadingPdf,
+        });
+    }
+
+    if (actions.show_download_assets && assetsUrl) {
+        availableActions.push({
+            id: 'download-assets',
+            label: 'Download assets',
+            icon: FolderDown,
+            onClick: handleDownloadAssets,
+            href: assetsUrl,
+        });
+    }
+
+    if (availableActions.length === 0) {
+        return null;
+    }
+
+    const primaryAction = availableActions[0];
+    const dropdownActions = availableActions.slice(1);
+    const hasDropdown = dropdownActions.length > 0;
+
+    const renderActionButton = (action: ActionItem, isPrimary: boolean) => {
+        const Icon = action.isSuccess ? Check : action.icon;
+        const label = action.isSuccess ? action.successLabel : action.label;
+
+        const buttonContent = (
+            <>
+                <Icon className={cn('h-4 w-4', action.isSuccess && 'text-green-500')} />
+                <span>{action.isLoading ? 'Generating...' : label}</span>
+            </>
+        );
+
+        const className = cn(
+            'h-8 px-3 text-sm font-medium gap-2',
+            isPrimary && hasDropdown && 'rounded-r-none border-r-0',
+            action.isLoading && 'opacity-50 cursor-not-allowed',
+        );
+
+        if (action.href) {
+            return (
+                <a href={action.href} onClick={action.onClick} className="text-decoration-none">
+                    <Button variant="outline" size="sm" className={className}>
+                        {buttonContent}
+                    </Button>
+                </a>
+            );
+        }
+
+        return (
+            <Button
+                variant="outline"
+                size="sm"
+                className={className}
+                onClick={action.onClick}
+                disabled={action.isLoading}
             >
-                <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-background border shadow-lg ring-1 ring-black/5 focus:outline-none z-[100]">
+                {buttonContent}
+            </Button>
+        );
+    };
+
+    return (
+        <div className="relative flex" ref={dropdownRef}>
+            {/* Primary action button */}
+            {renderActionButton(primaryAction, true)}
+
+            {/* Dropdown toggle */}
+            {hasDropdown && (
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2 rounded-l-none"
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                >
+                    <ChevronDown
+                        className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+                    />
+                </Button>
+            )}
+
+            {/* Dropdown menu */}
+            {hasDropdown && isOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 origin-top-right rounded-md bg-background border shadow-lg ring-1 ring-black/5 z-[100]">
                     <div className="p-1">
-                        {actions.show_copy_url && storyUrl && (
-                            <MenuItem>
-                                {({ focus }) => (
-                                    <button
-                                        onClick={handleCopyUrl}
-                                        className={cn(
-                                            'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm',
-                                            focus
-                                                ? 'bg-accent text-accent-foreground'
-                                                : 'text-foreground',
-                                        )}
-                                    >
-                                        {copiedUrl ? (
-                                            <Check className="h-4 w-4 text-green-500" />
-                                        ) : (
-                                            <Link2 className="h-4 w-4" />
-                                        )}
-                                        <span>{copiedUrl ? 'Copied!' : 'Copy URL'}</span>
-                                    </button>
-                                )}
-                            </MenuItem>
-                        )}
+                        {dropdownActions.map((action) => {
+                            const Icon = action.isSuccess ? Check : action.icon;
+                            const label = action.isSuccess ? action.successLabel : action.label;
 
-                        {actions.show_copy_content && (
-                            <MenuItem>
-                                {({ focus }) => (
-                                    <button
-                                        onClick={handleCopyText}
-                                        className={cn(
-                                            'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm',
-                                            focus
-                                                ? 'bg-accent text-accent-foreground'
-                                                : 'text-foreground',
-                                        )}
-                                    >
-                                        {copiedText ? (
-                                            <Check className="h-4 w-4 text-green-500" />
-                                        ) : (
-                                            <Copy className="h-4 w-4" />
-                                        )}
-                                        <span>{copiedText ? 'Copied!' : 'Copy text'}</span>
-                                    </button>
-                                )}
-                            </MenuItem>
-                        )}
-
-                        {actions.show_download_pdf && (
-                            <MenuItem>
-                                {({ focus }) => (
-                                    <button
-                                        onClick={handleDownloadPdf}
-                                        disabled={isDownloadingPdf}
-                                        className={cn(
-                                            'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm',
-                                            focus
-                                                ? 'bg-accent text-accent-foreground'
-                                                : 'text-foreground',
-                                            isDownloadingPdf && 'opacity-50 cursor-not-allowed',
-                                        )}
-                                    >
-                                        <FileDown className="h-4 w-4" />
-                                        <span>
-                                            {isDownloadingPdf ? 'Generating...' : 'Download PDF'}
-                                        </span>
-                                    </button>
-                                )}
-                            </MenuItem>
-                        )}
-
-                        {actions.show_download_assets && assetsUrl && (
-                            <MenuItem>
-                                {({ focus }) => (
+                            if (action.href) {
+                                return (
                                     <a
-                                        href={assetsUrl}
-                                        onClick={handleDownloadAssets}
+                                        key={action.id}
+                                        href={action.href}
+                                        onClick={action.onClick}
                                         className={cn(
                                             'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm',
-                                            focus
-                                                ? 'bg-accent text-accent-foreground'
-                                                : 'text-foreground',
+                                            'text-foreground hover:bg-accent hover:text-accent-foreground',
                                         )}
                                     >
-                                        <FolderDown className="h-4 w-4" />
-                                        <span>Download assets</span>
+                                        <Icon
+                                            className={cn(
+                                                'h-4 w-4',
+                                                action.isSuccess && 'text-green-500',
+                                            )}
+                                        />
+                                        <span>{label}</span>
                                     </a>
-                                )}
-                            </MenuItem>
-                        )}
+                                );
+                            }
+
+                            return (
+                                <button
+                                    key={action.id}
+                                    onClick={action.onClick}
+                                    disabled={action.isLoading}
+                                    className={cn(
+                                        'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm',
+                                        'text-foreground hover:bg-accent hover:text-accent-foreground',
+                                        action.isLoading && 'opacity-50 cursor-not-allowed',
+                                    )}
+                                >
+                                    <Icon
+                                        className={cn(
+                                            'h-4 w-4',
+                                            action.isSuccess && 'text-green-500',
+                                        )}
+                                    />
+                                    <span>{action.isLoading ? 'Generating...' : label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
-                </MenuItems>
-            </Transition>
-        </Menu>
+                </div>
+            )}
+        </div>
     );
 }
