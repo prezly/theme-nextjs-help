@@ -22,8 +22,9 @@
 }
 
 .backdrop {
-    // Hide backdrop - we use a unified overlay in the layout
-    display: none;
+    // Make backdrop transparent - we use a unified overlay in the layout for visuals
+    // but keep backdrop for click-outside handling
+    background: transparent !important;
 }
 
 .dialog {
