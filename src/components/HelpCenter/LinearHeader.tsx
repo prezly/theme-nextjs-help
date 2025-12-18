@@ -2,7 +2,7 @@
 
 import type { Newsroom, NewsroomCompanyInformation, TranslatedCategory } from '@prezly/sdk';
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { ExternalLink, Menu, Search, X } from 'lucide-react';
+import { ExternalLink, Menu, X } from 'lucide-react';
 import Image, { type ImageLoaderProps } from 'next/image';
 
 import { Link } from '@/components/Link';
@@ -26,7 +26,6 @@ interface Props {
     mainSiteUrl?: string | null;
     accentColor?: string;
     isSearchOpen?: boolean;
-    onSearchOpen?: () => void;
     onSearchClose?: () => void;
     isSidebarOpen?: boolean;
     onSidebarToggle?: () => void;
@@ -44,7 +43,6 @@ export function LinearHeader({
     mainSiteUrl,
     accentColor,
     isSearchOpen = false,
-    onSearchOpen,
     onSearchClose,
     isSidebarOpen = false,
     onSidebarToggle,
@@ -104,19 +102,6 @@ export function LinearHeader({
                             <span className="font-bold">{newsroomName}</span>
                         )}
                     </Link>
-
-                    {/* Search icon next to logo - hidden on mobile, shown on desktop */}
-                    {searchSettings && !newsroom.is_hub && onSearchOpen && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 ml-2 hidden md:flex"
-                            aria-label="Search"
-                            onClick={onSearchOpen}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    )}
                 </div>
 
                 {/* Mobile actions - Open app button and hamburger menu */}
