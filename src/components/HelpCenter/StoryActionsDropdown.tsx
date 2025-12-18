@@ -118,17 +118,6 @@ export function StoryActionsDropdown({
     // Build list of available actions
     const availableActions: ActionItem[] = [];
 
-    if (actions.show_copy_content) {
-        availableActions.push({
-            id: 'copy-text',
-            label: 'Copy text',
-            successLabel: 'Copied!',
-            icon: Copy,
-            onClick: handleCopyText,
-            isSuccess: copiedText,
-        });
-    }
-
     if (actions.show_copy_url && storyUrl) {
         availableActions.push({
             id: 'copy-url',
@@ -137,6 +126,17 @@ export function StoryActionsDropdown({
             icon: Link2,
             onClick: handleCopyUrl,
             isSuccess: copiedUrl,
+        });
+    }
+
+    if (actions.show_copy_content) {
+        availableActions.push({
+            id: 'copy-text',
+            label: 'Copy text',
+            successLabel: 'Copied!',
+            icon: Copy,
+            onClick: handleCopyText,
+            isSuccess: copiedText,
         });
     }
 
