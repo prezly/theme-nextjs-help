@@ -1,24 +1,16 @@
 .modal {
     padding: 0 !important;
     background: var(--prezly-background-color);
+    max-width: calc(100vw - 2rem) !important;
+    margin: 1rem !important;
 
     @include mobile-only {
-        margin: 0 !important;
-        height: 100% !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        max-width: 100% !important;
-        position: fixed !important;
-        inset: 0 !important;
+        margin-top: 4rem !important;
     }
 }
 
 .wrapper {
-    @include mobile-only {
-        padding: 0 !important;
-        min-height: 0 !important;
-        height: 100% !important;
-    }
+    // Default styles work for both mobile and desktop
 }
 
 .backdrop {
@@ -30,38 +22,5 @@
 .dialog {
     // Must be above the page overlay (z-65)
     z-index: 70 !important;
-
-    @include mobile-only {
-        z-index: 100 !important;
-    }
 }
 
-.searchBarWrapper {
-    display: flex;
-    align-items: flex-start;
-    border-bottom: 1px solid var(--prezly-border-color);
-
-    > form {
-        flex: 1;
-        border-bottom: none;
-    }
-}
-
-.closeButton {
-    display: none;
-    margin: $spacing-2;
-    margin-left: 0;
-    padding: $spacing-1 !important;
-    flex-shrink: 0;
-
-    @include mobile-only {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-.closeIcon {
-    width: 1rem;
-    height: 1rem;
-}
