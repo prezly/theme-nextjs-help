@@ -154,19 +154,33 @@ export function HelpCenterLayout({
                     )}
                 </div>
 
-                {/* Overlay for mobile */}
-                {isHydrated && isSidebarOpen && (
+                {/* Overlay for mobile sidebar or search */}
+                {isHydrated && (isSidebarOpen || isSearchOpen) && (
                     <div
-                        className="fixed inset-0 z-30 bg-black/50 md:hidden"
-                        onClick={() => setIsSidebarOpen(false)}
+                        className={cn(
+                            'fixed inset-0 bg-black/50 transition-opacity duration-200',
+                            // When search is open, overlay should be below search panel but above everything else
+                            isSearchOpen ? 'z-[65]' : 'z-30 md:hidden',
+                        )}
+                        onClick={() => {
+                            if (isSearchOpen) {
+                                setIsSearchOpen(false);
+                            } else {
+                                setIsSidebarOpen(false);
+                            }
+                        }}
                         onKeyDown={(event) => {
                             if (event.key === 'Escape') {
-                                setIsSidebarOpen(false);
+                                if (isSearchOpen) {
+                                    setIsSearchOpen(false);
+                                } else {
+                                    setIsSidebarOpen(false);
+                                }
                             }
                         }}
                         role="button"
                         tabIndex={0}
-                        aria-label="Close sidebar"
+                        aria-label={isSearchOpen ? 'Close search' : 'Close sidebar'}
                     />
                 )}
             </div>

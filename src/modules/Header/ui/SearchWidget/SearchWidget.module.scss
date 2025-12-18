@@ -22,9 +22,8 @@
 }
 
 .backdrop {
-    @include mobile-only {
-        display: none;
-    }
+    // Hide backdrop - we use a unified overlay in the layout
+    display: none;
 }
 
 .dialog {
