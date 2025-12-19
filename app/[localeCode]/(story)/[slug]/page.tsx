@@ -131,11 +131,9 @@ export default async function StoryPage(props: Props) {
             >
                 <Story
                     story={story}
-                    showDate={themeSettings.show_date}
                     withHeaderImage={themeSettings.header_image_placement}
                     relatedStories={themeSettings.show_read_more ? relatedStories : []}
                     hasRelatedStories={themeSettings.show_read_more}
-                    withBadges={themeSettings.story_card_variant === 'boxed'}
                     adjacentStories={adjacentStories}
                 />
             </HelpCenterLayout>

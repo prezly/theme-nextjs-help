@@ -79,7 +79,7 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     main_logo: null,
     main_site_label: null,
     main_site_url: 'http://rock.prezly.com/',
-    show_date: true,
+    show_date: false,
     show_featured_categories: true,
     sharing_actions: [
         SocialNetwork.FACEBOOK,

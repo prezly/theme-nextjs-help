@@ -118,11 +118,9 @@ export default async function HomePage(props: Props) {
         >
             <Story
                 story={pinnedStory}
-                showDate={themeSettings.show_date}
                 withHeaderImage={themeSettings.header_image_placement}
                 relatedStories={themeSettings.show_read_more ? relatedStories : []}
                 hasRelatedStories={themeSettings.show_read_more}
-                withBadges={themeSettings.story_card_variant === 'boxed'}
             />
         </HelpCenterLayout>
     );
