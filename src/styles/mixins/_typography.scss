@@ -13,14 +13,14 @@
 }
 
 @mixin heading-2 {
-    font-size: $font-size-m;
-    line-height: $line-height-m;
+    font-size: 1.5rem; // 24px
+    line-height: 2rem;
     font-weight: $font-weight-semi-bold;
 }
 
 @mixin heading-3 {
-    font-size: $font-size-s;
-    line-height: $line-height-s;
+    font-size: $font-size-m; // 20px
+    line-height: $line-height-m;
     font-weight: $font-weight-semi-bold;
 }
 
