@@ -53,11 +53,9 @@ export default async function PreviewStoryPage(props: Props) {
             <Broadcast story={story} isSecretStoryPage />
             <Story
                 story={story}
-                showDate={settings.show_date}
                 withHeaderImage={themeSettings.header_image_placement}
                 relatedStories={themeSettings.show_read_more ? relatedStories : []}
                 hasRelatedStories={themeSettings.show_read_more}
-                withBadges={themeSettings.story_card_variant === 'boxed'}
             />
         </>
     );

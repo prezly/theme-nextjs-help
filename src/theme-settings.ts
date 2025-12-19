@@ -64,7 +64,7 @@ export type StoryActions = Pick<
 >;
 
 export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
-    accent_color: '#3b82f6',
+    accent_color: '#2EAE67',
     background_color: '#ffffff',
     categories_layout: 'dropdown',
     font: Font.INTER,
@@ -78,8 +78,8 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     logo_size: 'medium',
     main_logo: null,
     main_site_label: null,
-    main_site_url: 'http://rock.prezly.com/',
-    show_date: true,
+    main_site_url: 'http://www.prezly.com/',
+    show_date: false,
     show_featured_categories: true,
     sharing_actions: [
         SocialNetwork.FACEBOOK,
@@ -93,11 +93,11 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     show_copy_content: true,
     show_copy_url: true,
     show_subtitle: false,
-    show_read_more: true,
+    show_read_more: false,
     show_download_pdf: true,
     show_download_assets: true,
     story_card_variant: 'default',
-    text_color: '#374151',
+    text_color: '#000000',
 };
 
 export const FONT_FAMILY = {

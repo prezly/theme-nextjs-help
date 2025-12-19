@@ -1,10 +1,7 @@
-import { ThemeSettingsAdapter } from '@prezly/theme-kit-nextjs/server';
-
 import { DEFAULT_THEME_SETTINGS, type ThemeSettings } from '@/theme-settings';
 
-import { initPrezlyClient } from './prezly';
-
-export const { useThemeSettings: themeSettings } = ThemeSettingsAdapter.connect<ThemeSettings>({
-    defaults: DEFAULT_THEME_SETTINGS,
-    settings: () => initPrezlyClient().contentDelivery.themeSettings(),
-});
+// Use local theme settings as the primary source instead of fetching from API
+// This is because this theme is deployed separately and doesn't have API settings configured
+export function themeSettings(): ThemeSettings {
+    return DEFAULT_THEME_SETTINGS;
+}
