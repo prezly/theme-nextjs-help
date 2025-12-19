@@ -64,7 +64,7 @@ export type StoryActions = Pick<
 >;
 
 export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
-    accent_color: '#3b82f6',
+    accent_color: '#2EAE67',
     background_color: '#ffffff',
     categories_layout: 'dropdown',
     font: Font.INTER,
