@@ -78,7 +78,7 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     logo_size: 'medium',
     main_logo: null,
     main_site_label: null,
-    main_site_url: 'http://rock.prezly.com/',
+    main_site_url: 'http://www.prezly.com/',
     show_date: false,
     show_featured_categories: true,
     sharing_actions: [
@@ -97,7 +97,7 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     show_download_pdf: true,
     show_download_assets: true,
     story_card_variant: 'default',
-    text_color: '#374151',
+    text_color: '#000000',
 };
 
 export const FONT_FAMILY = {
