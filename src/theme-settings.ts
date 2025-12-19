@@ -93,7 +93,7 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
     show_copy_content: true,
     show_copy_url: true,
     show_subtitle: false,
-    show_read_more: true,
+    show_read_more: false,
     show_download_pdf: true,
     show_download_assets: true,
     story_card_variant: 'default',

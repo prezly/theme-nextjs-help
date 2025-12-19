@@ -94,5 +94,6 @@ When working on new features:
 
 1. **Create a feature branch** - Before starting work on a new feature, ask for the branch name and create a new branch from `main`
 2. **Run checks before committing** - Always run `pnpm check` and fix any Biome errors/warnings before committing
-3. **Commit regularly** - Make frequent commits to the feature branch as work progresses
-4. **Push when done** - When the feature is complete, push the branch to GitHub
+3. **Test locally before committing** - Run `pnpm dev` to start the development server and analyze the server logs to ensure there are no errors. Check that pages load without runtime errors.
+4. **Commit regularly** - Make frequent commits to the feature branch as work progresses
+5. **Push when done** - When the feature is complete, push the branch to GitHub
