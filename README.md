@@ -56,6 +56,94 @@ Deploy the example using [Vercel](https://vercel.com) or [Netlify](https://www.n
 | ------ | ------- |
 | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/prezly/theme-nextjs-bea) | [![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/prezly/theme-nextjs-bea) |
 
+### Deploying in a Subfolder (Reverse Proxy)
+
+The theme supports being deployed behind a reverse proxy at a subfolder path (e.g., `https://example.com/help/` instead of `https://example.com/`). This is useful when you want to integrate the help center into an existing website.
+
+#### How it works
+
+The application reads the base path from the `X-Base-Path` HTTP header, which should be set by your reverse proxy. All internal links will automatically include this prefix.
+
+#### Nginx Configuration
+
+```nginx
+# Proxy the help center at /help/
+location /help/ {
+    proxy_pass http://your-nextjs-app:3000/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Base-Path /help;
+}
+
+# Proxy Next.js static assets
+location /help/_next/ {
+    proxy_pass http://your-nextjs-app:3000/_next/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+#### Caddy Configuration
+
+```caddy
+example.com {
+    handle_path /help/* {
+        reverse_proxy your-nextjs-app:3000 {
+            header_up X-Base-Path /help
+        }
+    }
+}
+```
+
+#### Apache Configuration
+
+```apache
+<Location /help/>
+    ProxyPass http://your-nextjs-app:3000/
+    ProxyPassReverse http://your-nextjs-app:3000/
+    RequestHeader set X-Base-Path "/help"
+</Location>
+
+<Location /help/_next/>
+    ProxyPass http://your-nextjs-app:3000/_next/
+    ProxyPassReverse http://your-nextjs-app:3000/_next/
+</Location>
+```
+
+#### Alternative: Environment Variable
+
+If you cannot set headers in your reverse proxy, you can alternatively set the `BASE_PATH` environment variable:
+
+```shell
+BASE_PATH=/help
+```
+
+Note: The header method (`X-Base-Path`) takes precedence over the environment variable.
+
+#### Testing Locally
+
+To test the subfolder deployment locally, use the included test proxy script:
+
+```shell
+# Terminal 1: Start the Next.js dev server
+pnpm dev
+
+# Terminal 2: Start the test proxy
+pnpm test:proxy
+```
+
+Then visit `http://localhost:4000/help/` to see the app running as if deployed at `/help/`.
+
+You can also specify a custom base path:
+
+```shell
+node scripts/test-proxy.mjs /docs
+```
+
 ### Scripts in package.json
 
 In addition to regular Next scripts, we provide some scripts to help with code-styling and linting checks.
