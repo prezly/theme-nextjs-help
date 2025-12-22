@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { RoutingContextProvider } from '@/adapters/client';
+import { BasePathProvider, BaseRoutingContextProvider } from '@/adapters/client';
 import { app, routing } from '@/adapters/server';
 
 interface Props {
@@ -8,17 +8,17 @@ interface Props {
 }
 
 export async function RoutingProvider({ children }: Props) {
-    const { router } = await routing();
+    const { router, basePath } = await routing();
     const locales = await app().locales();
     const defaultLocale = await app().defaultLocale();
 
     return (
-        <RoutingContextProvider
+        <BaseRoutingContextProvider
             routes={router.dump()}
             locales={locales}
             defaultLocale={defaultLocale}
         >
-            {children}
-        </RoutingContextProvider>
+            <BasePathProvider basePath={basePath}>{children}</BasePathProvider>
+        </BaseRoutingContextProvider>
     );
 }

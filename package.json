@@ -21,7 +21,8 @@
         "typecheck": "tsc --noEmit --incremental",
         "check": "biome check .",
         "release": "np --release-draft-only --yolo",
-        "test": "npx playwright test"
+        "test": "npx playwright test",
+        "test:proxy": "node scripts/test-proxy.mjs"
     },
     "dependencies": {
         "@hcaptcha/react-hcaptcha": "1.16.0",

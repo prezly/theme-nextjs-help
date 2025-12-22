@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 const Schema = z.object({
     NEXT_PUBLIC_BASE_URL: z.string().optional(),
+    BASE_PATH: z.string().optional(),
 
     REDIS_CACHE_URL: z.string().optional(),
 
