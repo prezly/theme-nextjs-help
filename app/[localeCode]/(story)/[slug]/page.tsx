@@ -59,6 +59,11 @@ export default async function StoryPage(props: Props) {
 
     // Fetch stories for each featured category to show in sidebar
     const featuredCategories = categories.filter((category) => category.is_featured);
+    const featuredCategoryIds = new Set(featuredCategories.map((c) => c.id));
+
+    // Filter breadcrumb categories to only show featured ones
+    const breadcrumbCategories = storyCategories.filter((cat) => featuredCategoryIds.has(cat.id));
+
     const categoryStories: Record<number, any[]> = {};
 
     for (const category of featuredCategories) {
@@ -109,7 +114,7 @@ export default async function StoryPage(props: Props) {
                 information={language.company_information}
                 searchSettings={searchSettings}
                 categoryStories={categoryStories}
-                breadcrumbCategories={storyCategories}
+                breadcrumbCategories={breadcrumbCategories}
                 storyTitle={story.title}
                 isHomepage={false}
                 mainSiteUrl={themeSettings.main_site_url}

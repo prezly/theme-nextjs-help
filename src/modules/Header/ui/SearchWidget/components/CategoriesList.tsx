@@ -12,6 +12,12 @@ import mainStyles from './MainPanel.module.scss';
 
 const INITIAL_ITEMS_SHOWN = 5;
 
+// Helper function to clean category names (remove prefix before "/")
+function getCleanCategoryName(categoryName: string) {
+    const parts = categoryName.split(' / ');
+    return parts.length > 1 ? parts[parts.length - 1] : categoryName;
+}
+
 interface Props {
     categories: TranslatedCategory[];
     onClose: () => void;
@@ -46,7 +52,7 @@ export function CategoriesList({ categories, onClose }: Props) {
                             }}
                             onClick={onPlainLeftClick(onClose)}
                         >
-                            {category.name}
+                            {getCleanCategoryName(category.name)}
                         </Link>
                     </li>
                 ))}
