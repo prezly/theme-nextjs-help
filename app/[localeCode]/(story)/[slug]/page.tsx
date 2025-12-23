@@ -1,5 +1,5 @@
 import type { Locale } from '@prezly/theme-kit-nextjs';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
 import { app, generateStoryPageMetadata, getSearchSettings } from '@/adapters/server';
 import { HelpCenterLayout } from '@/components/HelpCenter';
@@ -21,6 +21,11 @@ async function resolve(params: Props['params']) {
 
     const story = await app().story({ slug });
     if (!story) notFound();
+
+    // Redirect to canonical URL if set (308 permanent redirect)
+    if (story.seo_settings.canonical_url) {
+        permanentRedirect(story.seo_settings.canonical_url);
+    }
 
     const { stories: relatedStories } = await app().stories({
         limit: 3,
